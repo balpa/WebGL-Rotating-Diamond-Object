@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="styles.css">
+</head>
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+attribute  vec4 vPosition;
+attribute  vec4 vColor;
+
+varying vec4 fColor;
+
+uniform vec3 theta;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+
+void main()
+{
+    vec3 angles = radians( theta );
+    vec3 c = cos( angles );
+    vec3 s = sin( angles );
+
+    mat4 rx = mat4( 1.0,  0.0,  0.0, 0.0,
+		            0.0,  c.x,  s.x, 0.0,
+		            0.0, -s.x,  c.x, 0.0,
+		            0.0,  0.0,  0.0, 1.0 );
+
+    mat4 ry = mat4( c.y, 0.0, -s.y, 0.0,
+		            0.0, 1.0,  0.0, 0.0,
+		            s.y, 0.0,  c.y, 0.0,
+		            0.0, 0.0,  0.0, 1.0 );
+
+
+    mat4 rz = mat4( 
+			 c.z,  s.z, 0.0, 0.0,
+		    -s.z,  c.z, 0.0, 0.0,
+		     0.0,  0.0, 1.0, 0.0,
+		     0.0,  0.0, 0.0, 1.0 );
+
+    fColor = vColor;
+    gl_Position = projectionMatrix*modelViewMatrix*vPosition;
+
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+varying vec4 fColor;
+
+void
+main()
+{
+    gl_FragColor = fColor;
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="proje.js"></script>
+
+<body>
+<canvas class="canvas" style="background: black;" id="gl-canvas" width="800" height="800">
+Your browser doesn't support the HTML5 canvas element
+</canvas>
+<button class="reset-button" onclick="window.onmousedown">Reset</button>
+<div class="info">
+	<p>"D" => Rotate +X</p>
+	<p>"A" => Rotate -X</p>
+	<p>"W" => Rotate +Y</p>
+	<p>"S" => Rotate -Y</p>
+	<p>"H" => Move -X</p>
+	<p>"J" => Move +X</p>
+	<p>"O" => Move +Y</p>
+	<p>"L" => Move -Y</p>
+	<p>"Mouse Click" => Reset</p>
+	<p>"B" => Stops the animation</p>
+
+</body>
+</html>
